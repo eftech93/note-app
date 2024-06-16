@@ -1,0 +1,22 @@
+{
+  "name": "@repo/in-memory-cache-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20.14.2",
+    "@types/uuid": "^9.0.8"
+  },
+  "dependencies": {
+    "node": "^22.3.0",
+    "uuid": "^10.0.0"
+  }
+}

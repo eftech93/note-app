@@ -1,0 +1,9 @@
+{
+    "extends": "@repo/typescript-config/tsconfig.json",
+    "compilerOptions": {
+      "outDir": "dist"
+    },
+    "include": ["src", "index.ts"],
+    "exclude": ["node_modules", "dist"]
+  }
+  
