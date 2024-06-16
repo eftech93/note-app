@@ -48,5 +48,5 @@ server.listen(Number.parseInt(env.PORT), () => {
 setInterval(() => {
     const data : any = getUsageData();
     data['cacheSize'] = `${cache.size()} MB`;
-    console.log(data);
+    
 }, 5_000)
