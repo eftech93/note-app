@@ -20,3 +20,13 @@ export const getUsageData = (): any => {
     }
     return data;
 }
+
+export const hashCode =(key: string): number =>{
+    let hash = 0;
+    for (let i = 0, len = key.length; i < len; i++) {
+        let chr = key.charCodeAt(i);
+        hash = (hash << 5) - hash + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}

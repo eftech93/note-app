@@ -1,7 +1,7 @@
 import * as net from 'node:net';
 import { env } from './env';
 import { CacheFactory } from './caches/CacheFactory';
-import { getUsageData } from '@repo/in-memory-cache-client';
+import { MCCSHBClient, getUsageData } from '@repo/in-memory-cache-client';
 
 const cache = CacheFactory.createInstance(env.CACHE_REPLACEMENT_POLICY);
 const server = net.createServer((socket: net.Socket) => {
@@ -38,15 +38,11 @@ const server = net.createServer((socket: net.Socket) => {
                 socket.write(`${requestId}:ok`)
                 break;
         }
-    })
+    });
 });
 
 server.listen(Number.parseInt(env.PORT), () => {
     console.log('Listening to port', env.PORT)
 });
 
-setInterval(() => {
-    const data : any = getUsageData();
-    data['cacheSize'] = `${cache.size()} MB`;
-    
-}, 5_000)
+const configurationServiceClient = new MCCSHBClient(3020, 'localhost', Number.parseInt(env.PORT ?? "3010"), 'localhost')

@@ -3,7 +3,7 @@ import * as net from 'node:net';
 import { v4 as uuidV4 } from 'uuid';
 import { getUsageData } from './utils';
 
-export class IMCCSClient {
+export class MCCSHBClient {
   port: number;
   host: string;
   serverPort: number;
@@ -31,19 +31,12 @@ export class IMCCSClient {
     });
 
     this.interval = setInterval(() => {
+      console.log("Send HB")
       const dataUsage: any = getUsageData();
       dataUsage["port"] = serverPort;
       dataUsage['host'] = serverHost;
+      dataUsage['action'] = "hb";
+      this.client.write(`${uuidV4()}:${JSON.stringify(dataUsage)}`);
     }, 3_000);
-  }
-
-
-
-  async _sendRequest(message: string): Promise<string | undefined> {
-    return new Promise((resolve, reject) => {
-      const id = uuidV4();
-      this.requests.set(id, { resolve, reject });
-      this.client.write(`${id}:${message}`);
-    });
   }
 }

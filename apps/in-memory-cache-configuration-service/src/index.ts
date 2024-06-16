@@ -10,7 +10,7 @@ const map = new Map<string, HeartBeatData>(); // key is host: port, [status, jso
 // keep only latest data
 const server = net.createServer((socket: net.Socket) => {
 
-    async function performHB(requestId: string, dataAsJson: any) {
+    async function handleHB(requestId: string, dataAsJson: any) {
         const release = await dataAccessMutex.acquire();
         try {
             const { host, port, rss, heapTotal, heapUsed, external, arrayBuffers, cacheSize, ...rest } = dataAsJson;
@@ -34,13 +34,14 @@ const server = net.createServer((socket: net.Socket) => {
 
         const action: 'status' | 'hb' = dataAsJson['action'];
         if (action === 'hb') {
-            performHB(requestId, dataAsJson);
+            handleHB(requestId, dataAsJson);
         }else if(action === 'status'){
             const serverStatus: any = {};
             for(const key of map.keys()){
                 const [status] = map.get(key) as HeartBeatData;
                 serverStatus[key] = status;
             }
+            socket.write(`${requestId}:${JSON.stringify(serverStatus)}`);
         }
     });
 });
@@ -50,12 +51,14 @@ server.listen(Number.parseInt(env.PORT), () => {
 });
 
 setInterval(async () => {
-    console.log('verifying hbs')
+    console.log('verifying hbs', new Date())
     const release = await dataAccessMutex.acquire();
+    console.log(map);
     try{
         for(const key of map.keys()){
             const [status, _, lastDate] = map.get(key) as HeartBeatData;
-            const differenceInSeconds = (lastDate.getTime() - new Date().getTime()) / 1_000;
+            const differenceInSeconds = (- lastDate.getTime() + new Date().getTime()) / 1_000;
+            console.log(`diffInSeconds: ${differenceInSeconds}`)
             if(status === 'ok' && differenceInSeconds >= 5){
                 map.set(key, ['degradated', _, lastDate]);
             }
