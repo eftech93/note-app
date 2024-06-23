@@ -1,5 +1,5 @@
 {
-  "name": "@repo/in-memory-cache-client",
+  "name": "@repo/multi-master-database-client",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
@@ -14,10 +14,12 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.14.2",
-    "@types/uuid": "^9.0.8"
+    "@types/uuid": "^9.0.8",
+    "@types/mysql": "^2.15.26"
   },
   "dependencies": {
     "node": "^22.3.0",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "mysql": "^2.18.1"
   }
 }

@@ -5,7 +5,9 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "start:config-service": "pnpm --filter in-memory-cache-configuration-service start",
+    "start:cache-service": "pnpm --filter in-memory-cache-service start"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

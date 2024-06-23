@@ -41,8 +41,10 @@ const server = net.createServer((socket: net.Socket) => {
     });
 });
 
-server.listen(Number.parseInt(env.PORT), () => {
+server.listen(env.PORT, () => {
     console.log('Listening to port', env.PORT)
 });
 
-const configurationServiceClient = new MCCSHBClient(3020, 'localhost', Number.parseInt(env.PORT ?? "3010"), 'localhost')
+console.log(env)
+
+const configurationServiceClient = new MCCSHBClient(env.CONFIG_SERVICE_PORT, env.CONFIG_SERVICE_HOST, env.PORT , `${env.SERVICE_NAME}-${env.REPLICA_INDEX}`)

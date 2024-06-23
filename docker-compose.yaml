@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  in-memory-cache-configuration-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - cache-network
+      - mysql_cluster
+    environment:
+      PORT: "4000"
+      SERVICE_NAME: in-memory-cache-configuration-service
+    command: pnpm start:config-service
+
+  in-memory-cache-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000"
+    deploy:
+      replicas: 3
+    environment:
+      CONFIG_SERVICE_HOST: in-memory-cache-configuration-service
+      CONFIG_SERVICE_PORT: "4000"
+      PORT: "5000"
+      SERVICE_NAME: in-memory-cache-service
+    networks:
+      - cache-network
+    command: sh -c "pnpm start:cache-service -index $REPLICA_INDEX"
+    depends_on:
+      - in-memory-cache-configuration-service
+  
+  db-master1:
+    build:
+      context: .
+      dockerfile: ./database-cluster/Dockerfile.master
+    container_name: master1
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    volumes:
+      - ./data/master1_data:/var/lib/mysql  # Persist master1 data
+      - ./database-cluster/master1_conf/my.cnf:/etc/mysql/conf.d/master.cnf  # Configuration for master1
+    networks:
+      - mysql_cluster
+
+  db-master2:
+    build:
+      context: .
+      dockerfile: ./database-cluster/Dockerfile.master
+    container_name: master2
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    volumes:
+      - ./data/master2_data:/var/lib/mysql  # Persist master2 data
+      - ./database-cluster/master2_conf/my.cnf:/etc/mysql/conf.d/master.cnf  # Configuration for master2
+    networks:
+      - mysql_cluster
+
+  db-replica1:
+    build:
+      context: .
+      dockerfile: ./database-cluster/Dockerfile.replica
+    container_name: replica1
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MASTER_HOST: db-master1
+      MASTER_LOG_FILE: mysql-bin.000001
+      MASTER_LOG_POS: 4
+    volumes:
+      - ./data/replica1_data:/var/lib/mysql  # Persist replica1 data
+      - ./database-cluster/replica_conf/replica1.cnf:/etc/mysql/conf.d/replica.cnf  # Configuration for replicas
+    networks:
+      - mysql_cluster
+
+  db-replica2:
+    build:
+      context: .
+      dockerfile: ./database-cluster/Dockerfile.replica
+    container_name: replica2
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MASTER_HOST: db-master1
+      MASTER_LOG_FILE: mysql-bin.000001
+      MASTER_LOG_POS: 4
+    volumes:
+      - ./data/replica2_data:/var/lib/mysql  # Persist replica2 data
+      - ./database-cluster/replica_conf/replica1.cnf:/etc/mysql/conf.d/replica.cnf  # Configuration for replicas
+    networks:
+      - mysql_cluster
+
+  db-replica3:
+    build:
+      context: .
+      dockerfile: ./database-cluster/Dockerfile.replica
+    container_name: replica3
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MASTER_HOST: db-master2
+      MASTER_LOG_FILE: mysql-bin.000001
+      MASTER_LOG_POS: 4
+    volumes:
+      - ./data/replica3_data:/var/lib/mysql  # Persist replica3 data
+      - ./database-cluster/replica_conf/replica2.cnf:/etc/mysql/conf.d/replica.cnf  # Configuration for replicas
+    networks:
+      - mysql_cluster
+
+  db-replica4:
+    build:
+      context: .
+      dockerfile: ./database-cluster/Dockerfile.replica
+    container_name: replica4
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MASTER_HOST: db-master2
+      MASTER_LOG_FILE: mysql-bin.000001
+      MASTER_LOG_POS: 4
+    volumes:
+      - ./data/replica4_data:/var/lib/mysql  # Persist replica4 data
+      - ./database-cluster/replica_conf/replica2.cnf:/etc/mysql/conf.d/replica.cnf  # Configuration for replicas
+    networks:
+      - mysql_cluster
+
+networks:
+  cache-network:
+    driver: bridge
+  mysql_cluster:
+    driver: bridge

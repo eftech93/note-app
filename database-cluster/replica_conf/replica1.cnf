@@ -1,0 +1,12 @@
+[mysqld]
+server-id = 201
+log-bin = mysql-bin
+binlog_format = ROW
+relay-log = mysql-relay-bin
+log-slave-updates = true
+read-only = true
+replicate-ignore-db = mysql
+replicate-ignore-db = information_schema
+replicate-ignore-db = performance_schema
+replicate-ignore-db = sys
+skip_ssl
