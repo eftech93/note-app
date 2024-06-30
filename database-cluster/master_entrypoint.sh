@@ -24,7 +24,7 @@ EOF
 
 # Set up bidirectional replication if both masters are defined
 if [[ -n "$MASTER_HOST" ]]; then
-    mysql -uroot -proot_password <<EOF
+mysql -uroot -proot_password <<EOF
 CHANGE MASTER TO MASTER_HOST='$MASTER_HOST', MASTER_USER='repl', MASTER_PASSWORD='repl_password', MASTER_LOG_FILE='$MASTER_LOG_FILE', MASTER_LOG_POS=$MASTER_LOG_POS;
 START SLAVE;
 EOF

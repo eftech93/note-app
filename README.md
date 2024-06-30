@@ -29,3 +29,6 @@ data
 ## docker-compose up --build -d
 
 builds images
+
+## sudo rm -r -f ./data
+remove directory recursively
