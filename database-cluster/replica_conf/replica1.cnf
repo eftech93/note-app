@@ -9,4 +9,6 @@ replicate-ignore-db = mysql
 replicate-ignore-db = information_schema
 replicate-ignore-db = performance_schema
 replicate-ignore-db = sys
-skip_ssl
+
+log_replica_updates = ON
+tls_version = ""

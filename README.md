@@ -21,4 +21,11 @@ data
 
 ## docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(sudo docker ps -aq)
 
+## docker inspect -f '{{.Name}} - IP: {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}} - Ports: {{range $p, $conf := .NetworkSettings.Ports}}{{$p}} -> {{(index $conf 0).HostPort}} {{end}}' $(docker ps -aq)
+
+
 ## docker-compose ps
+
+## docker-compose up --build -d
+
+builds images

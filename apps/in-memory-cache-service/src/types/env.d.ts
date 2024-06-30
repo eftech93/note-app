@@ -1,4 +1,5 @@
-import { CacheReplacementPolicyType } from "./types";
+
+export type CacheReplacementPolicyType = 'lru' | 'lfu' | 'mru' | 'mfu';
 
 declare namespace NodeJS{
     interface ProcessEnv{

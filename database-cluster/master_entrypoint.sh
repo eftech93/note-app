@@ -9,6 +9,12 @@ while ! mysqladmin ping --silent; do
     sleep 1
 done
 
+# Set deprecated options to avoid warnings
+mysql -uroot -proot_password <<EOF
+SET GLOBAL host_cache_size = 0;
+EOF
+
+
 # Set up replication user
 mysql -uroot -proot_password <<EOF
 CREATE USER IF NOT EXISTS 'repl'@'%' IDENTIFIED WITH 'mysql_native_password' BY 'repl_password';

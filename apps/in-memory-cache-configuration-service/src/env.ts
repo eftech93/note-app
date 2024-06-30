@@ -1,5 +1,4 @@
 import { config } from 'dotenv';
-import { CacheReplacementPolicyType } from './types/types';
 
 config();
 

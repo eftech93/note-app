@@ -1,4 +1,4 @@
-import { CacheReplacementPolicyType } from "../types/types";
+import { CacheReplacementPolicyType } from "../types/env";
 import { ICache } from "./ICache";
 import { LRUCache } from "./LRUCache";
 
